@@ -5,3 +5,6 @@
         dark --prefersdark,
         cupcake;
 }
+* {
+    font-family: "Delius", cursive;
+}

@@ -4,6 +4,8 @@ import { reactive } from "vue";
 import Layout from "@/layouts/UserLayout.vue";
 
 import { useCartStore } from "@/stores/user/cart";
+import { useRoute } from "vue-router";
+import router from "@/router";
 
 const cartStore = useCartStore();
 const checkoutForm = [
@@ -24,15 +26,17 @@ const checkoutForm = [
         field: "note",
     },
 ];
+const checkout = () => {
+    cartStore.sendCheckOut(formData);
+    router.push({ name: "success" });
+};
 
-const formData = reactive([
-    {
-        email: "",
-        name: "",
-        address: "",
-        note: "",
-    },
-]);
+const formData = reactive({
+    email: "",
+    name: "",
+    address: "",
+    note: "",
+});
 </script>
 <template>
     <Layout>
@@ -46,11 +50,11 @@ const formData = reactive([
                             v-if="form.field === 'address'"
                             class="textarea w-full h-24"
                             placeholder="Note"
-                            v-model="formData[checkoutForm.field]"
+                            v-model="formData[form.field]"
                         ></textarea>
                         <input
                             v-else
-                            v-model="formData[checkoutForm.field]"
+                            v-model="formData[form.field]"
                             type="text"
                             class="input w-full"
                             placeholder="Type here"
@@ -91,7 +95,9 @@ const formData = reactive([
                         <div>{{ cartStore.cartSummaryPrice }}</div>
                     </div>
                     <div class="divider"></div>
-                    <button class="btn btn-primary w-full">Paynow</button>
+                    <button class="btn btn-primary w-full" @click="checkout">
+                        Paynow
+                    </button>
                 </div>
             </section>
         </div>
