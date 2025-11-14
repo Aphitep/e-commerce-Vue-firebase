@@ -35,7 +35,7 @@ const handleSearch = (event) => {
 </script>
 
 <template>
-    <div class="container mx-auto">
+    <div class="container mx-auto user-font">
         <div class="navbar bg-base-100 shadow-sm">
             <div class="flex-1">
                 <RouterLink :to="{ name: 'home' }" class="btn btn-ghost text-xl"
