@@ -1,6 +1,8 @@
 <script setup>
 import AdminLayout from "@/layouts/AdminLayout.vue";
 
+import Trash from "@/components/icons/Trash.vue";
+import Edit from "@/components/icons/Edit.vue";
 const products = [
     {
         name: "My items",
@@ -15,7 +17,13 @@ const products = [
 </script>
 <template>
     <AdminLayout
-        ><div>Product List</div>
+        ><div class="flex justify-between my-4">
+            <div class="text-3xl font-bold">Product List</div>
+            <div>
+                <button class="btn btn-neutral">Add new</button>
+            </div>
+        </div>
+        <div class="divided"></div>
         <div
             class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100"
         >
@@ -43,12 +51,28 @@ const products = [
                         <td>
                             {{ product.remainQuantity }}/{{ product.quantity }}
                         </td>
-                        <td>{{ product.status }}</td>
+                        <td>
+                            <div class="badge badge-success">
+                                {{ product.status }}
+                            </div>
+                        </td>
                         <td>{{ product.updateAt }}</td>
-                        <td>Action</td>
+                        <td>
+                            <div class="flex gap-2">
+                                <div>
+                                    <Edit
+                                        class="btn btn-xs btn-ghost fill-amber-400"
+                                    />
+                                </div>
+                                <div>
+                                    <Trash
+                                        class="btn btn-xs btn-ghost fill-red-600"
+                                    />
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
-            </table>
-        </div></AdminLayout
-    >
+            </table></div
+    ></AdminLayout>
 </template>
