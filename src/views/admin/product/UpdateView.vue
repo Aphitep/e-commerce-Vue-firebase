@@ -44,7 +44,7 @@ const productData = reactive({
 });
 
 const sendProductData = () => {
-    if (mode === "Edit") {
+    if (mode.value === "Edit") {
         adminProductStore.updateProduct(productId, productData);
     } else {
         adminProductStore.addProducts(productData);
