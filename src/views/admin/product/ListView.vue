@@ -1,19 +1,12 @@
 <script setup>
 import AdminLayout from "@/layouts/AdminLayout.vue";
 
+import { useAdminProductStore } from "@/stores/admin/products";
+
 import Trash from "@/components/icons/Trash.vue";
 import Edit from "@/components/icons/Edit.vue";
-const products = [
-    {
-        name: "My items",
-        Image: "https://picsum.photos/id/0/200/300",
-        price: 200,
-        quantity: 10,
-        remainQuantity: 5,
-        status: "open",
-        updateAt: new Date().toISOString(),
-    },
-];
+
+const adminProducts = useAdminProductStore();
 </script>
 <template>
     <AdminLayout
@@ -42,7 +35,7 @@ const products = [
                 </thead>
                 <tbody>
                     <!-- row 1 -->
-                    <tr v-for="product in products">
+                    <tr v-for="product in adminProducts.list">
                         <td>{{ product.name }}</td>
                         <td>
                             <img class="w-10" :src="product.Image" alt="" />
