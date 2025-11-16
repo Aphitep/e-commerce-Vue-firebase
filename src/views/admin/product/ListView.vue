@@ -6,14 +6,18 @@ import { useAdminProductStore } from "@/stores/admin/products";
 import Trash from "@/components/icons/Trash.vue";
 import Edit from "@/components/icons/Edit.vue";
 
-const adminProducts = useAdminProductStore();
+const adminProductsStore = useAdminProductStore();
 </script>
 <template>
     <AdminLayout
         ><div class="flex justify-between my-4">
             <div class="text-3xl font-bold">Product List</div>
             <div>
-                <button class="btn btn-neutral">Add new</button>
+                <RouterLink
+                    :to="{ name: 'admin-product-update' }"
+                    class="btn btn-neutral"
+                    >Add new</RouterLink
+                >
             </div>
         </div>
         <div class="divided"></div>
@@ -35,10 +39,10 @@ const adminProducts = useAdminProductStore();
                 </thead>
                 <tbody>
                     <!-- row 1 -->
-                    <tr v-for="product in adminProducts.list">
+                    <tr v-for="product in adminProductsStore.list">
                         <td>{{ product.name }}</td>
                         <td>
-                            <img class="w-10" :src="product.Image" alt="" />
+                            <img class="w-10" :src="product.image" alt="" />
                         </td>
                         <td>{{ product.price }}</td>
                         <td>

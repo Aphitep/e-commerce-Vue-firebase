@@ -5,7 +5,7 @@ export const useAdminProductStore = defineStore("admin-product", {
     list: [
       {
         name: "My items",
-        Image: "https://picsum.photos/id/0/200/300",
+        image: "https://picsum.photos/id/0/200/300",
         price: 200,
         quantity: 10,
         remainQuantity: 5,

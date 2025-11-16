@@ -74,7 +74,7 @@ const router = createRouter({
       component: ProductListView,
     },
     {
-      path: "/admin/product/update/:id",
+      path: "/admin/product/update",
       name: "admin-product-update",
       component: ProductUpdateView,
     },
