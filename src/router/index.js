@@ -75,6 +75,11 @@ const router = createRouter({
     },
     {
       path: "/admin/product/update",
+      name: "admin-add-product",
+      component: ProductUpdateView,
+    },
+    {
+      path: "/admin/product/update/:id",
       name: "admin-product-update",
       component: ProductUpdateView,
     },

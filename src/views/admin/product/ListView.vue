@@ -5,8 +5,17 @@ import { useAdminProductStore } from "@/stores/admin/products";
 
 import Trash from "@/components/icons/Trash.vue";
 import Edit from "@/components/icons/Edit.vue";
+import { onMounted } from "vue";
 
 const adminProductsStore = useAdminProductStore();
+
+onMounted(() => {
+    adminProductsStore.loadProduct();
+});
+
+const removeProduct = (index) => {
+    adminProductsStore.removeProduct(index);
+};
 </script>
 <template>
     <AdminLayout
@@ -14,7 +23,7 @@ const adminProductsStore = useAdminProductStore();
             <div class="text-3xl font-bold">Product List</div>
             <div>
                 <RouterLink
-                    :to="{ name: 'admin-product-update' }"
+                    :to="{ name: 'admin-add-product' }"
                     class="btn btn-neutral"
                     >Add new</RouterLink
                 >
@@ -39,7 +48,7 @@ const adminProductsStore = useAdminProductStore();
                 </thead>
                 <tbody>
                     <!-- row 1 -->
-                    <tr v-for="product in adminProductsStore.list">
+                    <tr v-for="(product, index) in adminProductsStore.list">
                         <td>{{ product.name }}</td>
                         <td>
                             <img class="w-10" :src="product.image" alt="" />
@@ -49,7 +58,13 @@ const adminProductsStore = useAdminProductStore();
                             {{ product.remainQuantity }}/{{ product.quantity }}
                         </td>
                         <td>
-                            <div class="badge badge-success">
+                            <div
+                                :class="
+                                    product.status === 'open'
+                                        ? 'badge badge-success'
+                                        : 'badge badge-error'
+                                "
+                            >
                                 {{ product.status }}
                             </div>
                         </td>
@@ -57,13 +72,21 @@ const adminProductsStore = useAdminProductStore();
                         <td>
                             <div class="flex gap-2">
                                 <div>
-                                    <Edit
-                                        class="btn btn-xs btn-ghost fill-amber-400"
-                                    />
+                                    <RouterLink
+                                        :to="{
+                                            name: 'admin-product-update',
+                                            params: { id: index },
+                                        }"
+                                    >
+                                        <Edit
+                                            class="btn btn-xs btn-ghost fill-amber-400"
+                                        ></Edit>
+                                    </RouterLink>
                                 </div>
                                 <div>
                                     <Trash
                                         class="btn btn-xs btn-ghost fill-red-600"
+                                        @click="removeProduct(index)"
                                     />
                                 </div>
                             </div>

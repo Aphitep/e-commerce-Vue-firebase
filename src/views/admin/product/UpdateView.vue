@@ -1,11 +1,16 @@
 <script setup>
 import AdminLayout from "@/layouts/AdminLayout.vue";
-import { reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useAdminProductStore } from "@/stores/admin/products";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const adminProductStore = useAdminProductStore();
 const router = useRouter();
+const route = useRoute();
+
+const mode = ref("Add");
+const productId = ref(-1);
+
 const formData = [
     {
         name: "Name",
@@ -32,21 +37,39 @@ const formData = [
 const productData = reactive({
     name: "",
     image: "",
-    price: "",
-    quantity: "",
+    price: 0,
+    quantity: 0,
     about: "",
     status: "",
 });
 
 const sendProductData = () => {
-    adminProductStore.addProducts(productData);
+    if (mode === "Edit") {
+        adminProductStore.updateProduct(productId, productData);
+    } else {
+        adminProductStore.addProducts(productData);
+    }
     router.push({ name: "admin-product-list" });
 };
+
+onMounted(() => {
+    if (route.params.id) {
+        productId.value = parseInt(route.params.id);
+        mode.value = "Edit";
+        const selectProduct = adminProductStore.getProduct(productId.value);
+        productData.name = selectProduct.name;
+        productData.image = selectProduct.image;
+        productData.price = selectProduct.price;
+        productData.quantity = selectProduct.quantity;
+        productData.about = selectProduct.about;
+        productData.status = selectProduct.status;
+    }
+});
 </script>
 <template>
     <AdminLayout
         ><div class="shadow-xl p-8">
-            <div class="text-2xl font-bold">Product update</div>
+            <div class="text-2xl font-bold">Product {{ mode }}</div>
             <div class="divider"></div>
             <div class="grid grid-cols-2 gap-2">
                 <fieldset v-for="form in formData" class="fieldset w-full">
@@ -100,7 +123,7 @@ const sendProductData = () => {
                 <div class="flex justify-between w-full mt-3">
                     <button class="btn btn-ghost">back</button>
                     <button class="btn btn-neutral" @click="sendProductData">
-                        Add
+                        {{ mode }}
                     </button>
                 </div>
             </div>
