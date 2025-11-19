@@ -18,7 +18,7 @@ const formData = [
     },
     {
         name: "Image",
-        field: "image",
+        field: "imageUrl",
     },
     {
         name: "Price",
@@ -36,7 +36,7 @@ const formData = [
 
 const productData = reactive({
     name: "",
-    image: "",
+    imageUrl: "",
     price: 0,
     quantity: 0,
     about: "",
@@ -58,7 +58,7 @@ onMounted(() => {
         mode.value = "Edit";
         const selectProduct = adminProductStore.getProduct(productId.value);
         productData.name = selectProduct.name;
-        productData.image = selectProduct.image;
+        productData.imageUrl = selectProduct.imageUrl;
         productData.price = selectProduct.price;
         productData.quantity = selectProduct.quantity;
         productData.about = selectProduct.about;

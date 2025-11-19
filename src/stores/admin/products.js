@@ -24,7 +24,7 @@ export const useAdminProductStore = defineStore("admin-product", {
       productData.remainQuantity = productData.quantity;
       productData.updateAt = new Date().toISOString();
       this.list.push(productData);
-      localStorage.setItem("admin-product", JSON.stringify());
+      localStorage.setItem("admin-product", JSON.stringify(this.list));
     },
     updateProduct(index, productData) {
       this.list[index] = {

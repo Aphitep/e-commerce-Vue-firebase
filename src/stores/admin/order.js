@@ -24,4 +24,9 @@ export const useAdminOrderStore = defineStore("admin-order", {
       },
     ],
   }),
+  actions: {
+    getOrder(index) {
+      return this.list[index];
+    },
+  },
 });
