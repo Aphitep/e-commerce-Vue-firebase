@@ -30,6 +30,10 @@ onMounted(() => {
                     <p>{{ checkOutData.orderNumber }}</p>
                 </div>
                 <div>
+                    <div class="font-bold">Payment method</div>
+                    <p>{{ checkOutData.paymentMethod }}</p>
+                </div>
+                <div>
                     <div class="font-bold">Address</div>
                     <p>{{ checkOutData.address }}</p>
                 </div>

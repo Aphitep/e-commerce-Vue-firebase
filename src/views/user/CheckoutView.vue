@@ -35,6 +35,7 @@ const formData = reactive({
     email: "",
     name: "",
     address: "",
+    paymentMethod: "credit card",
     note: "",
 });
 </script>
