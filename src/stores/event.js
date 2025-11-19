@@ -2,15 +2,23 @@ import { defineStore } from "pinia";
 
 export const useEventStore = defineStore("event", {
   state: () => ({
-    status: false,
+    alert: false,
     data: {},
   }),
   actions: {
-    popupMessage(status, data) {
+    popupMessage(attribute, message) {
+      this.alert = true;
       this.data = {
-        status,
-        data,
+        attribute,
+        message,
       };
+      setTimeout(() => {
+        clearMessage();
+      }, 3000);
+    },
+    clearMessage() {
+      this.alert = false;
+      this.data = {};
     },
   },
 });

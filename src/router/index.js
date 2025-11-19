@@ -59,7 +59,7 @@ const router = createRouter({
       component: AdminLoginView,
     },
     {
-      path: "/admin/order/detail",
+      path: "/admin/order/detail/:id",
       name: "admin-order-detail",
       component: OrderDetailView,
     },
