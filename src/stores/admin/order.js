@@ -1,0 +1,27 @@
+import { defineStore } from "pinia";
+
+export const useAdminOrderStore = defineStore("admin-order", {
+  state: () => ({
+    list: [
+      {
+        no: "A112234",
+        customerName: "นายทดสอบ นะ",
+        totalPrice: "25,000",
+        status: "Payment Completed",
+        address: "111/892 Nonthaburi Thailand 99999",
+        paymentMethod: "Credit card",
+        updatedAt: "9/15/2023, 11:50:24 PM",
+        products: [
+          {
+            name: "ทดสอบ",
+            description: "รายละเอียดสินค้า 1",
+            imageUrl:
+              "https://fastly.picsum.photos/id/928/200/200.jpg?hmac=5MQxbf-ANcu87ZaOn5sOEObpZ9PpJfrOImdC7yOkBlg",
+            quantity: 1,
+            price: "13,000",
+          },
+        ],
+      },
+    ],
+  }),
+});
