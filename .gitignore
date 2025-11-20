@@ -34,3 +34,6 @@ coverage
 
 # Vitest
 __screenshots__/
+
+#src
+/src/firebase.js
