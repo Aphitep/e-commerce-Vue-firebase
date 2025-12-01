@@ -1,29 +1,29 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { RouterLink, useRouter } from "vue-router";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 import { useCartStore } from "@/stores/user/cart";
-
+import { useAccountStore } from "@/stores/account";
 const cartStore = useCartStore();
+const useAccount = useAccountStore();
 const router = useRouter();
-const isLoggedIn = ref(false);
 const searchText = ref("");
-onMounted(() => {
-    if (localStorage.getItem("isLoggedIn")) {
-        isLoggedIn.value = true;
-    }
-});
 
-const login = () => {
-    isLoggedIn.value = true;
-    localStorage.setItem("isLoggedIn", true);
+const login = async () => {
+    try {
+        await useAccount.googleLogin();
+    } catch {
+        console.log("login false");
+    }
 };
 
-const logout = () => {
-    isLoggedIn.value = false;
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("cart-item");
-    localStorage.removeItem("cart-checkout");
+const logout = async () => {
+    try {
+        await useAccount.logout();
+    } catch {
+        console.log("login false");
+    }
     window.location.reload();
 };
 
@@ -105,7 +105,11 @@ const handleSearch = (event) => {
                         </div>
                     </div>
                 </div>
-                <button @click="login" v-if="!isLoggedIn" class="btn btn-ghost">
+                <button
+                    @click="login"
+                    v-if="!useAccount.isLoggedIn"
+                    class="btn btn-ghost"
+                >
                     Login
                 </button>
                 <div v-else class="dropdown dropdown-end">

@@ -15,6 +15,8 @@ import ProductUpdateView from "@/views/admin/product/UpdateView.vue";
 import UserListView from "@/views/admin/user/ListView.vue";
 import UserUpdateView from "@/views/admin/user/UpdateView.vue";
 
+import { useAccountStore } from "@/stores/account";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -96,4 +98,9 @@ const router = createRouter({
   ],
 });
 
+router.beforeEach(async (to, from, next) => {
+  const useAccount = useAccountStore();
+  await useAccount.checkAuth();
+  next();
+});
 export default router;
