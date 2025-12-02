@@ -1,7 +1,8 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
+import { useAccountStore } from "@/stores/account";
 const menuList = [
     {
         name: "Order",
@@ -15,18 +16,25 @@ const menuList = [
         name: "User",
         routerName: "admin-user-list",
     },
-    {
-        name: "Logout",
-        routerName: "admin-login",
-    },
 ];
 
 const route = useRoute();
+const router = useRouter();
+const useAccout = useAccountStore();
 const activeRoute = ref("");
 
 onMounted(() => {
     activeRoute.value = route.name;
 });
+
+const logout = async () => {
+    try {
+        await useAccout.logout();
+        router.push({ name: "home" });
+    } catch (error) {
+        console.log("error", error);
+    }
+};
 </script>
 <template>
     <div class="drawer drawer-open">
@@ -47,7 +55,6 @@ onMounted(() => {
                         BackOffice
                     </RouterLink>
                 </li>
-                <!-- Sidebar content here -->
                 <li v-for="menu in menuList">
                     <RouterLink
                         :class="
@@ -57,6 +64,8 @@ onMounted(() => {
                         >{{ menu.name }}</RouterLink
                     >
                 </li>
+                <!-- Sidebar content here -->
+                <li><button @click="logout">Logout</button></li>
             </ul>
         </div>
     </div>

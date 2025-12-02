@@ -57,7 +57,7 @@ const router = createRouter({
     },
     {
       path: "/admin/login",
-      name: "admin-login",
+      name: "secret-login",
       component: AdminLoginView,
     },
     {
@@ -101,6 +101,12 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const useAccount = useAccountStore();
   await useAccount.checkAuth();
-  next();
+  if (to.name.includes("admin") && !useAccount.isAdmin) {
+    router.push({ name: "home" });
+  } else if (to.name === "secret-login" && useAccount.isAdmin) {
+    next({ name: "admin-dashboard" });
+  } else {
+    next();
+  }
 });
 export default router;

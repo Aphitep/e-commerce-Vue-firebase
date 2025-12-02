@@ -23,6 +23,9 @@ export const useAccountStore = defineStore("account", {
           if (user) {
             this.user = user;
             this.isLoggedIn = true;
+            if (user.email === "admin@admin.com") {
+              this.isAdmin = true;
+            }
             resolve(true);
           } else {
             resolve(false);
@@ -50,6 +53,8 @@ export const useAccountStore = defineStore("account", {
         switch (error.code) {
           case "auth/invalid-email":
             throw new Error("อีเมลไม่ถูกต้อง");
+          case "auth/wrong-password":
+            throw new Error("รหัสผ่านไม่ถูกต้อง");
           default:
             throw new Error("มีข้อผิดพลาดในการเข้าสู่ระบบ");
         }
