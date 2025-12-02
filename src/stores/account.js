@@ -3,6 +3,7 @@ import { auth } from "@/firebase";
 import {
   GoogleAuthProvider,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -12,6 +13,7 @@ const provider = new GoogleAuthProvider();
 export const useAccountStore = defineStore("account", {
   state: () => ({
     isLoggedIn: false,
+    isAdmin: false,
     user: {},
   }),
   actions: {
@@ -37,8 +39,25 @@ export const useAccountStore = defineStore("account", {
         console.log("error :", error);
       }
     },
+    async adminLogin(email, password) {
+      try {
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        this.isLoggedIn = true;
+        this.isAdmin = true;
+        this.user = result.user;
+      } catch (error) {
+        console.log("error", error.code);
+        switch (error.code) {
+          case "auth/invalid-email":
+            throw new Error("อีเมลไม่ถูกต้อง");
+          default:
+            throw new Error("มีข้อผิดพลาดในการเข้าสู่ระบบ");
+        }
+      }
+    },
     async logout() {
       this.isLoggedIn = false;
+      this.isAdmin = false;
       await signOut(auth);
     },
   },

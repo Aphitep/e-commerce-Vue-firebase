@@ -13,7 +13,7 @@ export const useEventStore = defineStore("event", {
         message,
       };
       setTimeout(() => {
-        clearMessage();
+        this.clearMessage();
       }, 3000);
     },
     clearMessage() {

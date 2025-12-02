@@ -1,5 +1,25 @@
 <script setup>
-import { RouterLink } from "vue-router";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+import { useAccountStore } from "@/stores/account";
+import { useEventStore } from "@/stores/event";
+
+const eventStore = useEventStore();
+const useAccount = useAccountStore();
+const router = useRouter();
+const email = ref("");
+const password = ref("");
+
+const login = async () => {
+    try {
+        await useAccount.adminLogin(email.value, password.value);
+        router.push({ name: "admin-dashboard" });
+    } catch (error) {
+        console.log("error", error.message);
+        eventStore.popupMessage("error", error.message);
+    }
+};
 </script>
 
 <template>
@@ -10,6 +30,7 @@ import { RouterLink } from "vue-router";
                 <fieldset class="fieldset w-full">
                     <legend class="fieldset-legend">Email</legend>
                     <input
+                        v-model="email"
                         type="text"
                         class="input w-full"
                         placeholder="email"
@@ -18,18 +39,16 @@ import { RouterLink } from "vue-router";
                 <fieldset class="fieldset w-full">
                     <legend class="fieldset-legend">Password</legend>
                     <input
+                        v-model="password"
                         type="password"
                         class="input w-full"
                         placeholder="password"
                     />
                 </fieldset>
 
-                <RouterLink
-                    :to="{ name: 'admin-dashboard' }"
-                    class="btn btn-neutral w-1/2"
-                >
+                <button @click="login" class="btn btn-neutral w-1/2">
                     Login
-                </RouterLink>
+                </button>
             </div>
         </div>
     </div>
