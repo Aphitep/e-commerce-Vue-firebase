@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
 import {
   GoogleAuthProvider,
   onAuthStateChanged,
@@ -8,6 +8,8 @@ import {
   signOut,
 } from "firebase/auth";
 
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+
 const provider = new GoogleAuthProvider();
 
 export const useAccountStore = defineStore("account", {
@@ -15,17 +17,35 @@ export const useAccountStore = defineStore("account", {
     isLoggedIn: false,
     isAdmin: false,
     user: {},
+    profile: {},
   }),
   actions: {
     async checkAuth() {
       return new Promise((resolve) => {
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
           if (user) {
             this.user = user;
-            this.isLoggedIn = true;
-            if (user.email === "admin@admin.com") {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              this.profile = docSnap.data();
+            } else {
+              const newUser = {
+                fullname: user.displayName,
+                role: "member",
+                status: "active",
+                updatedAt: new Date(),
+              };
+
+              await setDoc(docRef, newUser);
+              this.profile = newUser;
+            }
+
+            if (this.profile.role === "admin") {
               this.isAdmin = true;
             }
+            this.isLoggedIn = true;
             resolve(true);
           } else {
             resolve(false);

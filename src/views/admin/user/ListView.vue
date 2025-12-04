@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
 
 import AdminLayout from "@/layouts/AdminLayout.vue";
@@ -21,6 +21,10 @@ const changeStatus = (index) => {
     }
     adminUserStore.updateUser(index, selectedUser);
 };
+
+onMounted(() => {
+    adminUserStore.loadUser();
+});
 </script>
 <template>
     <AdminLayout>
