@@ -31,8 +31,8 @@ onMounted(async () => {
         userData.status = selectedUser.status;
     }
 });
-const updateUser = () => {
-    adminUserStore.updateUser(userIndex.value, userData);
+const updateUser = async () => {
+    await adminUserStore.updateUser(userUID.value, userData);
     eventStore.popupMessage("info", "Update user successful");
     router.push({ name: "admin-user-list" });
 };

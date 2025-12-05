@@ -48,7 +48,7 @@ onMounted(() => {
                             {{ user.status }}
                         </div>
                     </td>
-                    <td>{{ user.updateAt }}</td>
+                    <td>{{ user.updatedAt }}</td>
                     <td>
                         <div class="flex gap-1">
                             <RouterLink

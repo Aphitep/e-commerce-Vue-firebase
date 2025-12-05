@@ -14,7 +14,7 @@ export const useAdminUserStore = defineStore("admin-users", {
         const userList = userSnapshot.docs.map((doc) => {
           let convertUser = doc.data();
           convertUser.uid = doc.id;
-          convertUser.updateAt = convertUser.updatedAt.toDate();
+          convertUser.updatedAt = convertUser.updatedAt.toDate();
           return convertUser;
         });
 
@@ -35,13 +35,13 @@ export const useAdminUserStore = defineStore("admin-users", {
     async updateUser(uid, userData) {
       try {
         const updateUser = {
-          name: userData.name,
+          fullname: userData.fullname,
           status: userData.status,
           role: userData.role,
-          updateAt: new Date(),
+          updatedAt: new Date(),
         };
 
-        const userRef = doc(db, "user", uid);
+        const userRef = doc(db, "users", uid);
         await setDoc(userRef, updateUser);
       } catch (error) {
         console.log("error", error);
