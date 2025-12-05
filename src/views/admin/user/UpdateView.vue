@@ -11,9 +11,9 @@ const eventStore = useEventStore();
 const adminUserStore = useAdminUserStore();
 const route = useRoute();
 const router = useRouter();
-const userIndex = ref(-1);
+const userUID = ref(-1);
 const formData = {
-    role: ["admin", "user"],
+    role: ["admin", "member"],
 };
 
 const userData = reactive({
@@ -21,10 +21,11 @@ const userData = reactive({
     role: "",
     status: "",
 });
-onMounted(() => {
+onMounted(async () => {
     if (route.params.id) {
-        userIndex.value = parseInt(route.params.id);
-        const selectedUser = adminUserStore.getUser(userIndex.value);
+        userUID.value = route.params.id;
+        const selectedUser = await adminUserStore.getUser(userUID.value);
+
         userData.fullname = selectedUser.fullname;
         userData.role = selectedUser.role;
         userData.status = selectedUser.status;
@@ -54,8 +55,8 @@ const updateUser = () => {
                 <fieldset class="fieldset w-full">
                     <legend class="fieldset-legend">Role</legend>
                     <select class="select w-full" v-model="userData.role">
-                        <option v-for="status in formData.role">
-                            {{ status }}
+                        <option v-for="role in formData.role">
+                            {{ role }}
                         </option>
                     </select>
                 </fieldset>

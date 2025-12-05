@@ -54,7 +54,7 @@ onMounted(() => {
                             <RouterLink
                                 :to="{
                                     name: 'admin-user-update',
-                                    params: { id: index },
+                                    params: { id: user.uid },
                                 }"
                                 class="btn"
                                 >Edit</RouterLink

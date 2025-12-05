@@ -4,30 +4,48 @@ import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 export const useAdminUserStore = defineStore("admin-users", {
   state: () => ({
-    list: [{}],
+    list: [],
   }),
   actions: {
     async loadUser() {
-      const userCol = collection(db, "users");
-      const userSnapshot = await getDocs(userCol);
-      const userList = userSnapshot.docs.map((doc) => {
-        let convertUser = doc.data();
-        convertUser.uid = doc.id;
-        convertUser.updateAt = convertUser.updatedAt.toDate();
-        return convertUser;
-      });
+      try {
+        const userCol = collection(db, "users");
+        const userSnapshot = await getDocs(userCol);
+        const userList = userSnapshot.docs.map((doc) => {
+          let convertUser = doc.data();
+          convertUser.uid = doc.id;
+          convertUser.updateAt = convertUser.updatedAt.toDate();
+          return convertUser;
+        });
 
-      this.list = userList;
-      console.log(userList);
+        this.list = userList;
+      } catch (error) {
+        console.log("error", error);
+      }
     },
-    async getUser(index) {
-      return this.list[index];
+    async getUser(uid) {
+      try {
+        const userRef = doc(db, "users", uid);
+        const userSnapshot = await getDoc(userRef);
+        return userSnapshot.data();
+      } catch (error) {
+        console.log("error", error);
+      }
     },
-    async updateUser(index, userData) {
-      this.list[index] = {
-        ...userData,
-        updateAt: new Date().toISOString(),
-      };
+    async updateUser(uid, userData) {
+      try {
+        const updateUser = {
+          name: userData.name,
+          status: userData.status,
+          role: userData.role,
+          updateAt: new Date(),
+        };
+
+        const userRef = doc(db, "user", uid);
+        await setDoc(userRef, updateUser);
+      } catch (error) {
+        console.log("error", error);
+      }
     },
   },
 });
