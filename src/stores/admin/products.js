@@ -40,22 +40,36 @@ export const useAdminProductStore = defineStore("admin-product", {
         console.log("error :", error);
       }
     },
-    addProducts(productData) {
-      productData.remainQuantity = productData.quantity;
-      productData.updateAt = new Date().toISOString();
-      this.list.push(productData);
-      localStorage.setItem("admin-product", JSON.stringify(this.list));
+    async addProducts(productData) {
+      try {
+        productData.remainQuantity = productData.quantity;
+        productData.updateAt = new Date().toISOString();
+        const productsCol = collection(db, "products");
+
+        await addDoc(productsCol, productData);
+      } catch (error) {
+        console.log("error :", error);
+      }
     },
-    updateProduct(index, productData) {
-      this.list[index] = {
-        ...structuredClone(productData),
-        updateAt: new Date().toISOString(),
-      };
-      localStorage.setItem("admin-product", JSON.stringify(this.list));
+    async updateProduct(productId, productData) {
+      try {
+        const updateProduct = {
+          ...productData,
+          updateAt: new Date(),
+        };
+        const productRef = doc(db, "products", productId);
+        await setDoc(productRef, updateProduct);
+      } catch (error) {
+        console.log("error :", error);
+      }
     },
-    removeProduct(index) {
-      this.list.splice(index, 1);
-      localStorage.setItem("admin-product", JSON.stringify(this.list));
+    async removeProduct(productId) {
+      try {
+        const productRef = doc(db, "products", productId);
+        await deleteDoc(productRef);
+      } catch (error) {
+        console.log("error :", error);
+      }
     },
   },
 });
