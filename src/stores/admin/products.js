@@ -1,24 +1,44 @@
 import { defineStore } from "pinia";
-
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  addDoc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "@/firebase";
 export const useAdminProductStore = defineStore("admin-product", {
   state: () => ({
     list: [],
     isLoaded: false,
   }),
   actions: {
-    loadProduct() {
-      const products = localStorage.getItem("admin-product");
+    async loadProduct() {
+      const productsCol = collection(db, "products");
+      const productsSnapshot = await getDocs(productsCol);
+
+      const products = productsSnapshot.docs.map((doc) => {
+        const convertProduct = doc.data();
+        convertProduct.productId = doc.id;
+        convertProduct.updatedAt = convertProduct.updatedAt.toDate();
+
+        return convertProduct;
+      });
       if (products) {
-        this.list = JSON.parse(products);
-        this.isLoaded = true;
+        this.list = products;
       }
     },
 
-    getProduct(index) {
-      if (!this.isLoaded) {
-        this.loadProduct();
+    async getProduct(productId) {
+      try {
+        const productRef = doc(db, "products", productId);
+        const productsSnapshot = await getDoc(productRef);
+        return productsSnapshot.data();
+      } catch (error) {
+        console.log("error :", error);
       }
-      return this.list[index];
     },
     addProducts(productData) {
       productData.remainQuantity = productData.quantity;

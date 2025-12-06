@@ -61,7 +61,7 @@ const removeProduct = (index) => {
                         {{ product.status }}
                     </div>
                 </td>
-                <td>{{ product.updateAt }}</td>
+                <td>{{ product.updatedAt }}</td>
                 <td>
                     <div class="flex gap-2">
                         <div>

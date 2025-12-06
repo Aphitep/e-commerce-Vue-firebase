@@ -11,7 +11,7 @@ import Edit from "@/components/icons/Edit.vue";
 import Table from "@/components/Table.vue";
 
 const adminUserStore = useAdminUserStore();
-const changeStatus = (index) => {
+const changeStatus = async (index) => {
     let selectedUser = adminUserStore.list[index];
 
     if (selectedUser.status === "active") {
@@ -19,7 +19,7 @@ const changeStatus = (index) => {
     } else {
         selectedUser.status = "active";
     }
-    adminUserStore.updateUser(index, selectedUser);
+    await adminUserStore.updateUser(selectedUser.uid, selectedUser);
 };
 
 onMounted(() => {
