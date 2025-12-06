@@ -68,7 +68,7 @@ const removeProduct = (index) => {
                             <RouterLink
                                 :to="{
                                     name: 'admin-product-update',
-                                    params: { id: index },
+                                    params: { id: product.productId },
                                 }"
                             >
                                 <Edit

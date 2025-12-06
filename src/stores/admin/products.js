@@ -43,7 +43,7 @@ export const useAdminProductStore = defineStore("admin-product", {
     async addProducts(productData) {
       try {
         productData.remainQuantity = productData.quantity;
-        productData.updateAt = new Date().toISOString();
+        productData.updatedAt = new Date();
         const productsCol = collection(db, "products");
 
         await addDoc(productsCol, productData);
@@ -55,7 +55,8 @@ export const useAdminProductStore = defineStore("admin-product", {
       try {
         const updateProduct = {
           ...productData,
-          updateAt: new Date(),
+          remainQuantity: productData.quantity,
+          updatedAt: new Date(),
         };
         const productRef = doc(db, "products", productId);
         await setDoc(productRef, updateProduct);

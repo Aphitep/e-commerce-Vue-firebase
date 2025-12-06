@@ -43,20 +43,26 @@ const productData = reactive({
     status: "",
 });
 
-const sendProductData = () => {
-    if (mode.value === "Edit") {
-        adminProductStore.updateProduct(productId, productData);
-    } else {
-        adminProductStore.addProducts(productData);
+const sendProductData = async () => {
+    try {
+        if (mode.value === "Edit") {
+            await adminProductStore.updateProduct(productId.value, productData);
+        } else {
+            await adminProductStore.addProducts(productData);
+        }
+        router.push({ name: "admin-product-list" });
+    } catch (error) {
+        console.log(error);
     }
-    router.push({ name: "admin-product-list" });
 };
 
-onMounted(() => {
+onMounted(async () => {
     if (route.params.id) {
-        productId.value = parseInt(route.params.id);
+        productId.value = route.params.id;
         mode.value = "Edit";
-        const selectProduct = adminProductStore.getProduct(productId.value);
+        const selectProduct = await adminProductStore.getProduct(
+            productId.value,
+        );
         productData.name = selectProduct.name;
         productData.imageUrl = selectProduct.imageUrl;
         productData.price = selectProduct.price;
@@ -121,7 +127,11 @@ onMounted(() => {
                     </div>
                 </fieldset>
                 <div class="flex justify-between w-full mt-3">
-                    <button class="btn btn-ghost">back</button>
+                    <RouterLink
+                        :to="{ name: 'admin-product-list' }"
+                        class="btn btn-ghost"
+                        >back</RouterLink
+                    >
                     <button class="btn btn-neutral" @click="sendProductData">
                         {{ mode }}
                     </button>
