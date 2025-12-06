@@ -14,8 +14,8 @@ onMounted(() => {
     adminProductsStore.loadProduct();
 });
 
-const removeProduct = (index) => {
-    adminProductsStore.removeProduct(index);
+const removeProduct = async (productId) => {
+    await adminProductsStore.removeProduct(productId);
 };
 </script>
 <template>
@@ -79,7 +79,7 @@ const removeProduct = (index) => {
                         <div>
                             <Trash
                                 class="btn btn-xs btn-ghost fill-red-600"
-                                @click="removeProduct(index)"
+                                @click="removeProduct(product.productId)"
                             />
                         </div>
                     </div>

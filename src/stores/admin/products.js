@@ -68,6 +68,7 @@ export const useAdminProductStore = defineStore("admin-product", {
       try {
         const productRef = doc(db, "products", productId);
         await deleteDoc(productRef);
+        await this.loadProduct();
       } catch (error) {
         console.log("error :", error);
       }
