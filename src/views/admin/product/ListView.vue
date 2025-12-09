@@ -17,6 +17,10 @@ onMounted(() => {
 const removeProduct = async (productId) => {
     await adminProductsStore.removeProduct(productId);
 };
+
+const searchProducts = async () => {
+    await adminProductsStore.loadProduct();
+};
 </script>
 <template>
     <AdminLayout
@@ -31,7 +35,29 @@ const removeProduct = async (productId) => {
             </div>
         </div>
         <div class="divided"></div>
-
+        <div class="flex m-1.5">
+            <div class="flex-2 join">
+                <input
+                    v-model="adminProductsStore.filter.search"
+                    type="search"
+                    class="input input-md join-item"
+                    placeholder="ค้นหา"
+                />
+                <button @click="searchProducts" class="btn join-item">
+                    Search
+                </button>
+            </div>
+            <div class="flex-1 text-end">
+                <div class="join">
+                    <button class="btn join-item">ใหม่</button>
+                    <button class="btn join-item">เก่า</button>
+                </div>
+                <div class="join">
+                    <button class="btn join-item">open</button>
+                    <button class="btn join-item">close</button>
+                </div>
+            </div>
+        </div>
         <Table
             :header="[
                 'Name',

@@ -7,16 +7,30 @@ import {
   addDoc,
   setDoc,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
 export const useAdminProductStore = defineStore("admin-product", {
   state: () => ({
     list: [],
-    isLoaded: false,
+    filter: {
+      search: "",
+      sort: {
+        updateAt: "asc",
+        status: "asc",
+      },
+    },
   }),
   actions: {
     async loadProduct() {
-      const productsCol = collection(db, "products");
+      let productsCol = query(collection(db, "products"));
+      if (this.filter.search) {
+        productsCol = query(
+          productsCol,
+          where("name", "==", this.filter.search),
+        );
+      }
       const productsSnapshot = await getDocs(productsCol);
 
       const products = productsSnapshot.docs.map((doc) => {
