@@ -21,6 +21,15 @@ const removeProduct = async (productId) => {
 const searchProducts = async () => {
     await adminProductsStore.loadProduct();
 };
+
+const changeFilterStatus = async (newStatus) => {
+    if (adminProductsStore.filter.status === newStatus) {
+        adminProductsStore.filter.status = "";
+    } else {
+        adminProductsStore.filter.status = newStatus;
+    }
+    await adminProductsStore.loadProduct();
+};
 </script>
 <template>
     <AdminLayout
@@ -53,8 +62,28 @@ const searchProducts = async () => {
                     <button class="btn join-item">เก่า</button>
                 </div>
                 <div class="join">
-                    <button class="btn join-item">open</button>
-                    <button class="btn join-item">close</button>
+                    <button
+                        @click="changeFilterStatus('open')"
+                        class="btn join-item"
+                        :class="
+                            adminProductsStore.filter.status === 'open'
+                                ? 'btn-active'
+                                : ''
+                        "
+                    >
+                        open
+                    </button>
+                    <button
+                        @click="changeFilterStatus('close')"
+                        class="btn join-item"
+                        :class="
+                            adminProductsStore.filter.status === 'close'
+                                ? 'btn-active'
+                                : ''
+                        "
+                    >
+                        close
+                    </button>
                 </div>
             </div>
         </div>

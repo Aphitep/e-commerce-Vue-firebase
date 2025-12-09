@@ -16,9 +16,9 @@ export const useAdminProductStore = defineStore("admin-product", {
     list: [],
     filter: {
       search: "",
+      status: "",
       sort: {
         updateAt: "asc",
-        status: "asc",
       },
     },
   }),
@@ -29,6 +29,13 @@ export const useAdminProductStore = defineStore("admin-product", {
         productsCol = query(
           productsCol,
           where("name", "==", this.filter.search),
+        );
+      }
+
+      if (this.filter.status) {
+        productsCol = query(
+          productsCol,
+          where("status", "==", this.filter.status),
         );
       }
       const productsSnapshot = await getDocs(productsCol);
