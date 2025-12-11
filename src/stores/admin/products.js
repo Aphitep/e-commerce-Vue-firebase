@@ -9,6 +9,12 @@ import {
   deleteDoc,
   query,
   where,
+  orderBy,
+  limit,
+  limitToLast,
+  getCountFromServer,
+  startAfter,
+  endBefore
 } from "firebase/firestore";
 import { db } from "@/firebase";
 export const useAdminProductStore = defineStore("admin-product", {
@@ -18,13 +24,15 @@ export const useAdminProductStore = defineStore("admin-product", {
       search: "",
       status: "",
       sort: {
-        updateAt: "asc",
+        updateAt: "desc",
       },
     },
   }),
   actions: {
     async loadProduct() {
-      let productsCol = query(collection(db, "products"));
+      let productsCol = query(collection(db, "products"),
+        orderBy("updatedAt", this.filter.sort.updateAt)
+      );
       if (this.filter.search) {
         productsCol = query(
           productsCol,
