@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from "vue";
 import AdminLayout from "@/layouts/AdminLayout.vue";
 
 import { useAdminProductStore } from "@/stores/admin/products";
@@ -6,8 +7,9 @@ import { useAdminProductStore } from "@/stores/admin/products";
 import Trash from "@/components/icons/Trash.vue";
 import Edit from "@/components/icons/Edit.vue";
 import Table from "@/components/Table.vue";
-import { onMounted } from "vue";
+import Pagination from "@/components/Pagination.vue";
 
+const currentPage = ref(1);
 const adminProductsStore = useAdminProductStore();
 
 onMounted(() => {
@@ -22,18 +24,27 @@ const searchProducts = async () => {
     await adminProductsStore.loadProduct();
 };
 
+const changePage = async (newPage) => {
+    if (newPage < currentPage.value) {
+        await adminProductsStore.loadNextProduct("prev")
+    } else {
+        await adminProductsStore.loadNextProduct("next")
+    }
+    currentPage.value = newPage;
+}
 const changeFilterStatus = async (newStatus) => {
     if (adminProductsStore.filter.status === newStatus) {
         adminProductsStore.filter.status = "";
     } else {
         adminProductsStore.filter.status = newStatus;
     }
+
     await adminProductsStore.loadProduct();
 };
 
 const changeSortUpdateAt = async (newSort) => {
-    adminProductsStore.filter.sort.updateAt= newSort;
-   
+    adminProductsStore.filter.sort.updateAt = newSort;
+
     await adminProductsStore.loadProduct();
 };
 </script>
@@ -124,5 +135,7 @@ const changeSortUpdateAt = async (newSort) => {
                 </td>
             </tr>
         </Table>
+        <Pagination :activePage="currentPage" :maxPage="adminProductsStore.total" :changePage="changePage">
+        </Pagination>
     </AdminLayout>
 </template>
