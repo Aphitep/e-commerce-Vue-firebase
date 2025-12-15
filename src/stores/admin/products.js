@@ -41,31 +41,31 @@ export const useAdminProductStore = defineStore("admin-product", {
       });
     },
     totalPage(state) {
-      return Math.ceil(state.total / 1);
+      return Math.ceil(state.total / 2);
     },
   },
   actions: {
     async loadProduct() {
       let productsCol = query(
         collection(db, "products"),
-        orderBy("updatedAt", this.filter.sort.updateAt)
+        orderBy("updatedAt", this.filter.sort.updateAt),
       );
       if (this.filter.search) {
         productsCol = query(
           productsCol,
-          where("name", "==", this.filter.search)
+          where("name", "==", this.filter.search),
         );
       }
 
       if (this.filter.status) {
         productsCol = query(
           productsCol,
-          where("status", "==", this.filter.status)
+          where("status", "==", this.filter.status),
         );
       }
       const rawProductsCol = productsCol;
 
-      productsCol = query(productsCol, limit(1));
+      productsCol = query(productsCol, limit(10));
 
       const productsSnapshot = await getDocs(productsCol);
       this.docList = productsSnapshot.docs;
@@ -77,17 +77,17 @@ export const useAdminProductStore = defineStore("admin-product", {
     async loadNextProduct(mode) {
       let productsCol = query(
         collection(db, "products"),
-        orderBy("updatedAt", this.filter.sort.updateAt)
+        orderBy("updatedAt", this.filter.sort.updateAt),
       );
       if (mode === "next") {
         const lastDocument = this.docList[this.docList.length - 1];
-        productsCol = query(productsCol, startAfter(lastDocument), limit(1));
+        productsCol = query(productsCol, startAfter(lastDocument), limit(10));
       } else {
         const firstDocument = this.docList[0];
         productsCol = query(
           productsCol,
           endBefore(firstDocument),
-          limitToLast(1)
+          limitToLast(10),
         );
       }
 
@@ -105,7 +105,7 @@ export const useAdminProductStore = defineStore("admin-product", {
     },
     async addProducts(productData) {
       try {
-        productData.remainQuantity = productData.quantity;
+        productData.remainQuantity = parseInt(productData.quantity);
         productData.updatedAt = new Date();
         const productsCol = collection(db, "products");
 
@@ -118,7 +118,7 @@ export const useAdminProductStore = defineStore("admin-product", {
       try {
         const updateProduct = {
           ...productData,
-          remainQuantity: productData.quantity,
+          remainQuantity: parseInt(productData.quantity),
           updatedAt: new Date(),
         };
         const productRef = doc(db, "products", productId);

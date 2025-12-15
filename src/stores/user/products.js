@@ -13,7 +13,11 @@ export const useProductStore = defineStore("product", {
     async loadProduct() {
       try {
         const productSnapshot = await getDocs(collection(db, "products"));
-        const products = productSnapshot.docs.map((doc) => doc.data());
+        const products = productSnapshot.docs.map((doc) => {
+          const convertedData = doc.data();
+          convertedData.productId = doc.id;
+          return convertedData;
+        });
         if (products) {
           this.list = products;
         }

@@ -26,12 +26,12 @@ const searchProducts = async () => {
 
 const changePage = async (newPage) => {
     if (newPage < currentPage.value) {
-        await adminProductsStore.loadNextProduct("prev")
+        await adminProductsStore.loadNextProduct("prev");
     } else {
-        await adminProductsStore.loadNextProduct("next")
+        await adminProductsStore.loadNextProduct("next");
     }
     currentPage.value = newPage;
-}
+};
 const changeFilterStatus = async (newStatus) => {
     if (adminProductsStore.filter.status === newStatus) {
         adminProductsStore.filter.status = "";
@@ -53,54 +53,88 @@ const changeSortUpdateAt = async (newSort) => {
         <div class="flex justify-between my-4">
             <div class="text-3xl font-bold">Product List</div>
             <div>
-                <RouterLink :to="{ name: 'admin-add-product' }" class="btn btn-neutral">Add new</RouterLink>
+                <RouterLink
+                    :to="{ name: 'admin-add-product' }"
+                    class="btn btn-neutral"
+                    >Add new</RouterLink
+                >
             </div>
         </div>
         <div class="divided"></div>
         <div class="flex m-1.5">
             <div class="flex-2 join">
-                <input v-model="adminProductsStore.filter.search" type="search" class="input input-md join-item"
-                    placeholder="ค้นหา" />
+                <input
+                    v-model="adminProductsStore.filter.search"
+                    type="search"
+                    class="input input-md join-item"
+                    placeholder="ค้นหา"
+                />
                 <button @click="searchProducts" class="btn join-item">
                     Search
                 </button>
             </div>
             <div class="flex-1 text-end">
                 <div class="join">
-                    <button @click="changeSortUpdateAt('desc')" class="btn join-item" :class="adminProductsStore.filter.sort.updateAt === 'desc'
-                        ? 'btn-active'
-                        : ''
-                        ">ใหม่</button>
-                    <button @click="changeSortUpdateAt('asc')" class="btn join-item" :class="adminProductsStore.filter.sort.updateAt === 'asc'
-                        ? 'btn-active'
-                        : ''
-                        ">เก่า</button>
+                    <button
+                        @click="changeSortUpdateAt('desc')"
+                        class="btn join-item"
+                        :class="
+                            adminProductsStore.filter.sort.updateAt === 'desc'
+                                ? 'btn-active'
+                                : ''
+                        "
+                    >
+                        ใหม่
+                    </button>
+                    <button
+                        @click="changeSortUpdateAt('asc')"
+                        class="btn join-item"
+                        :class="
+                            adminProductsStore.filter.sort.updateAt === 'asc'
+                                ? 'btn-active'
+                                : ''
+                        "
+                    >
+                        เก่า
+                    </button>
                 </div>
                 <div class="join">
-                    <button @click="changeFilterStatus('open')" class="btn join-item" :class="adminProductsStore.filter.status === 'open'
-                        ? 'btn-active'
-                        : ''
-                        ">
+                    <button
+                        @click="changeFilterStatus('open')"
+                        class="btn join-item"
+                        :class="
+                            adminProductsStore.filter.status === 'open'
+                                ? 'btn-active'
+                                : ''
+                        "
+                    >
                         open
                     </button>
-                    <button @click="changeFilterStatus('close')" class="btn join-item" :class="adminProductsStore.filter.status === 'close'
-                        ? 'btn-active'
-                        : ''
-                        ">
+                    <button
+                        @click="changeFilterStatus('close')"
+                        class="btn join-item"
+                        :class="
+                            adminProductsStore.filter.status === 'close'
+                                ? 'btn-active'
+                                : ''
+                        "
+                    >
                         close
                     </button>
                 </div>
             </div>
         </div>
-        <Table :header="[
-            'Name',
-            'Image',
-            'Price',
-            'Quantity',
-            'Status',
-            'Update at',
-            '',
-        ]">
+        <Table
+            :header="[
+                'Name',
+                'Image',
+                'Price',
+                'Quantity',
+                'Status',
+                'Update at',
+                '',
+            ]"
+        >
             <tr v-for="(product, index) in adminProductsStore.list">
                 <td>{{ product.name }}</td>
                 <td>
@@ -109,10 +143,13 @@ const changeSortUpdateAt = async (newSort) => {
                 <td>{{ product.price }}</td>
                 <td>{{ product.remainQuantity }}/{{ product.quantity }}</td>
                 <td>
-                    <div :class="product.status === 'open'
-                        ? 'badge badge-success'
-                        : 'badge badge-error'
-                        ">
+                    <div
+                        :class="
+                            product.status === 'open'
+                                ? 'badge badge-success'
+                                : 'badge badge-error'
+                        "
+                    >
                         {{ product.status }}
                     </div>
                 </td>
@@ -120,22 +157,32 @@ const changeSortUpdateAt = async (newSort) => {
                 <td>
                     <div class="flex gap-2">
                         <div>
-                            <RouterLink :to="{
-                                name: 'admin-product-update',
-                                params: { id: product.productId },
-                            }">
-                                <Edit class="btn btn-xs btn-ghost fill-amber-400"></Edit>
+                            <RouterLink
+                                :to="{
+                                    name: 'admin-product-update',
+                                    params: { id: product.productId },
+                                }"
+                            >
+                                <Edit
+                                    class="btn btn-xs btn-ghost fill-amber-400"
+                                ></Edit>
                             </RouterLink>
                         </div>
                         <div>
-                            <Trash class="btn btn-xs btn-ghost fill-red-600"
-                                @click="removeProduct(product.productId)" />
+                            <Trash
+                                class="btn btn-xs btn-ghost fill-red-600"
+                                @click="removeProduct(product.productId)"
+                            />
                         </div>
                     </div>
                 </td>
             </tr>
         </Table>
-        <Pagination :activePage="currentPage" :maxPage="adminProductsStore.total" :changePage="changePage">
+        <Pagination
+            :activePage="currentPage"
+            :maxPage="adminProductsStore.totalPage"
+            :changePage="changePage"
+        >
         </Pagination>
     </AdminLayout>
 </template>
