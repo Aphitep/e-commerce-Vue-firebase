@@ -1,5 +1,11 @@
 import { db } from "@/firebase";
-import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  increment,
+  updateDoc,
+  writeBatch,
+} from "firebase/firestore";
 import { defineStore } from "pinia";
 
 export const useCartStore = defineStore("cart", {
@@ -53,13 +59,14 @@ export const useCartStore = defineStore("cart", {
         orderNumber: `AA${Math.floor(Math.random() * 90000 * 10)}`,
         product: this.items,
       };
-
+      const bacth = writeBatch(db);
       for (const product of checkout.product) {
         const productRef = doc(db, "products", product.productId);
-        await updateDoc(productRef, {
+        bacth.update(productRef, {
           remainQuantity: increment(-1),
         });
       }
+      await bacth.commit();
       localStorage.setItem("cart-checkout", JSON.stringify(checkout));
     },
     loadCheckout() {
