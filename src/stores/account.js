@@ -8,7 +8,7 @@ import {
   signOut,
 } from "firebase/auth";
 
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
 const provider = new GoogleAuthProvider();
 
@@ -20,6 +20,20 @@ export const useAccountStore = defineStore("account", {
     profile: {},
   }),
   actions: {
+    async updateUser(userData) {
+      console.log(userData);
+      try {
+        const updateUserData = {
+          fullname: userData.fullname,
+          imageUrl: userData.imageUrl,
+        };
+        const userRef = doc(db, `users/${this.user.uid}`);
+
+        updateDoc(userRef, updateUserData);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async checkAuth() {
       return new Promise((resolve) => {
         onAuthStateChanged(auth, async (user) => {
@@ -46,6 +60,7 @@ export const useAccountStore = defineStore("account", {
               this.isAdmin = true;
             }
             this.isLoggedIn = true;
+            this.profile.email = user.email;
             resolve(true);
           } else {
             resolve(false);

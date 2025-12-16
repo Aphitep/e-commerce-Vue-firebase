@@ -6,13 +6,13 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useCartStore } from "@/stores/user/cart";
 import { useAccountStore } from "@/stores/account";
 const cartStore = useCartStore();
-const useAccount = useAccountStore();
+const accountStore = useAccountStore();
 const router = useRouter();
 const searchText = ref("");
 
 const login = async () => {
     try {
-        await useAccount.googleLogin();
+        await accountStore.googleLogin();
     } catch {
         console.log("login false");
     }
@@ -20,7 +20,7 @@ const login = async () => {
 
 const logout = async () => {
     try {
-        await useAccount.logout();
+        await accountStore.logout();
     } catch {
         console.log("login false");
     }
@@ -107,7 +107,7 @@ const handleSearch = (event) => {
                 </div>
                 <button
                     @click="login"
-                    v-if="!useAccount.isLoggedIn"
+                    v-if="!accountStore.isLoggedIn"
                     class="btn btn-ghost"
                 >
                     Login
@@ -121,7 +121,10 @@ const handleSearch = (event) => {
                         <div class="w-10 rounded-full">
                             <img
                                 alt="Tailwind CSS Navbar component"
-                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                :src="
+                                    accountStore.profile.imageUrl ||
+                                    'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+                                "
                             />
                         </div>
                     </div>

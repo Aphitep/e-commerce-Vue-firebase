@@ -1,40 +1,61 @@
 <script setup>
 import Layout from "@/layouts/UserLayout.vue";
 import { onMounted, reactive, ref } from "vue";
+import { storage } from "@/firebase";
+import {
+    ref as storageRef,
+    uploadBytes,
+    getDownloadURL,
+} from "firebase/storage";
+import { useAccountStore } from "@/stores/account";
+
+const accountStore = useAccountStore();
 
 const profileData = reactive({
-    profileImage:
-        "https://img.daisyui.com/images/profile/demo/yellingcat@192.webp",
-    name: "",
+    profileImage: "",
+    fullname: "",
     email: "",
 });
 
-const handleFileImage = (event) => {
+const handleFileImage = async (event) => {
     const fileImage = event.target.files[0];
 
     if (fileImage) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            profileData.profileImage = e.target.result;
-        };
-        reader.readAsDataURL(fileImage);
+        const uploadRef = storageRef(
+            storage,
+            `users/${accountStore.user.uid}/${fileImage.name}`,
+        );
+
+        const snapshot = await uploadBytes(uploadRef, fileImage);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+        profileData.profileImage = downloadUrl;
+        // reader.readAsDataURL(fileImage);
     }
 };
 
-const updateProfile = () => {
-    // console.log(profileData);
-    localStorage.setItem("profile-data", JSON.stringify(profileData));
+const updateProfile = async () => {
+    // console.log(profileData)
+    try {
+        const updateUserData = {
+            fullname: profileData.fullname,
+            imageUrl: profileData.profileImage,
+            email: profileData.email,
+        };
+
+        await accountStore.updateUser(updateUserData);
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 onMounted(() => {
-    let setProfile = localStorage.getItem("profile-data");
+    let setProfile = accountStore.profile;
 
-    if (setProfile) {
-        setProfile = JSON.parse(setProfile);
-        profileData.profileImage = setProfile.profileImage;
-        profileData.email = setProfile.email;
-        profileData.name = setProfile.name;
-    }
+    profileData.profileImage =
+        setProfile.imageUrl ||
+        "https://img.daisyui.com/images/profile/demo/yellingcat@192.webp";
+    profileData.email = setProfile.email;
+    profileData.fullname = setProfile.fullname;
 });
 </script>
 <template>
@@ -63,6 +84,7 @@ onMounted(() => {
                         class="input input-bordered w-full"
                         type="text"
                         placeholder="Enter your email"
+                        disabled
                     />
                 </div>
                 <div class="form-control w-full">
@@ -70,7 +92,7 @@ onMounted(() => {
                         <span class="label-text">name</span>
                     </label>
                     <input
-                        v-model="profileData.name"
+                        v-model="profileData.fullname"
                         class="input input-bordered w-full"
                         type="text"
                         placeholder="Enter your name"
