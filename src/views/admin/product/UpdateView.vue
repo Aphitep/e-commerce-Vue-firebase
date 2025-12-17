@@ -3,13 +3,19 @@ import AdminLayout from "@/layouts/AdminLayout.vue";
 import { onMounted, reactive, ref } from "vue";
 import { useAdminProductStore } from "@/stores/admin/products";
 import { useRoute, useRouter } from "vue-router";
+import { storage } from "@/firebase";
+import {
+    ref as storageRef,
+    uploadBytes,
+    getDownloadURL,
+} from "firebase/storage";
 
 const adminProductStore = useAdminProductStore();
 const router = useRouter();
 const route = useRoute();
 
 const mode = ref("Add");
-const productId = ref(-1);
+const productIndex = ref(-1);
 
 const formData = [
     {
@@ -19,6 +25,7 @@ const formData = [
     {
         name: "Image",
         field: "imageUrl",
+        type: "upload-image",
     },
     {
         name: "Price",
@@ -46,7 +53,10 @@ const productData = reactive({
 const sendProductData = async () => {
     try {
         if (mode.value === "Edit") {
-            await adminProductStore.updateProduct(productId.value, productData);
+            await adminProductStore.updateProduct(
+                productIndex.value,
+                productData,
+            );
         } else {
             await adminProductStore.addProducts(productData);
         }
@@ -55,13 +65,30 @@ const sendProductData = async () => {
         console.log(error);
     }
 };
+const handleFileImage = async (event) => {
+    const fileImage = event.target.files[0];
+    let mainPath = "";
+    if (productIndex.value !== -1) {
+        mainPath = productIndex.value + "-";
+    }
+    if (fileImage) {
+        const uploadRef = storageRef(
+            storage,
+            `products/${mainPath}/${fileImage.name}`,
+        );
 
+        const snapshot = await uploadBytes(uploadRef, fileImage);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+        productData.imageUrl = downloadUrl;
+        // reader.readAsDataURL(fileImage);
+    }
+};
 onMounted(async () => {
     if (route.params.id) {
-        productId.value = route.params.id;
+        productIndex.value = route.params.id;
         mode.value = "Edit";
         const selectProduct = await adminProductStore.getProduct(
-            productId.value,
+            productIndex.value,
         );
         productData.name = selectProduct.name;
         productData.imageUrl = selectProduct.imageUrl;
@@ -88,12 +115,24 @@ onMounted(async () => {
                         class="input h-20 w-full"
                     ></textarea>
                     <input
-                        v-else
+                        v-else-if="form.type != 'upload-image'"
                         v-model="productData[form.field]"
                         type="text"
                         class="input w-full"
                         placeholder="Type here"
                     />
+                    <div v-else>
+                        <div class="avatar">
+                            <div class="w-24 rounded">
+                                <img :src="productData[form.field]" />
+                            </div>
+                        </div>
+                        <input
+                            type="file"
+                            class="file-input"
+                            @change="handleFileImage"
+                        />
+                    </div>
                 </fieldset>
             </div>
             <div class="divider"></div>
